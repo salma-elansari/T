@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 300px;
+            margin: 0 auto;
+            background-color: #1a2a40;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header img {
+            width: 50px;
+            height: 50px;
+        }
+        .info {
+            text-align: left;
+        }
+        .info p {
+            margin: 5px 0;
+        }
+        .info p span {
+            font-weight: bold;
+        }
+        .habilitation {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .habilitation table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .habilitation table, .habilitation th, .habilitation td {
+            border: 1px solid white;
+        }
+        .habilitation th, .habilitation td {
+            padding: 8px;
+            text-align: center;
+        }
+        .habilitation th {
+            background-color: #2a3b54;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://content.preventionbtp.fr/media/cache/large/uploads/images/14/14b0023b473baa1abe9a3d63b6c1cdb915528c42.jpg" alt="Left Image">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9NFZ3XpYY98phkMXXhYhQ0Wge6_fgddml9A&s" alt="Right Image">
+        </div>
+        <div class="profile-pic"></div>
+        <div class="info">
+            <p><span>NOM ET PRENOM:</span> </p>
+            <p><span>SERVICE:</span> </p>
+            <p><span>MATRICULE:</span> </p>
+            <p><span>NUMERO DE TELEPHONE:</span> </p>
+            <p><span>ADRESSE EMAIL:</span> </p>
+        </div>
+        <div class="habilitation">
+            <h3>LISTE DES HABILITATIONS:</h3>
+            <table>
+                <tr>
+                    <th>Habilitation</th>
+                    <th>Date d'expiration</th>
+                </tr>
+                <tr>
+                    <td>Habilitation 1</td>
+                    <td>01/01/2025</td>
+                </tr>
+                <tr>
+                    <td>Habilitation 2</td>
+                    <td>01/01/2026</td>
+                </tr>
+                <!-- Add more rows as needed -->
+            </table>
+        </div>
+    </div>
+</body>
+</html>
