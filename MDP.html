@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 300px;
+            margin: 0 auto;
+            background-color: #1a2a40;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header img {
+            width: 50px;
+            height: 50px;
+        }
+        .info p {
+            margin: 5px 0;
+        }
+        .info p span {
+            font-weight: bold;
+        }
+        .habilitation {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .habilitation table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .habilitation table, .habilitation th, .habilitation td {
+            border: 1px solid white;
+        }
+        .habilitation th, .habilitation td {
+            padding: 8px;
+            text-align: center;
+        }
+        .habilitation th {
+            background-color: #2a3b54;
+        }
+        .add-habilitation {
+            display: none;
+            margin-top: 20px;
+        }
+        .add-habilitation input {
+            margin: 5px 0;
+            padding: 5px;
+            width: 95%;
+        }
+        .add-habilitation button {
+            padding: 5px 10px;
+            background-color: #2a3b54;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .add-button {
+            position: absolute;
+            bottom: -20px;
+            right: -20px;
+            background-color: #2a3b54;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="IMG_20240813_093519.jpg" alt="Left Image">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9NFZ3XpYY98phkMXXhYhQ0Wge6_fgddml9A&s" alt="Right Image">
+        </div>
+        <div class="info">
+            <p><span>NOM:</span> EL HARIRI</p>
+            <p><span>PRENOM:</span> SOMAYA</p>
+            <p><span>SERVICE:</span> Bureau des méthodes</p>
+            <p><span>MATRICULE:</span> 72200</p>
+            <p><span>NUMÉRO DE TÉLÉPHONE:</span> 0606907509</p>
+        </div>
+        <div class="habilitation">
+            <h3>LISTE DES HABILITATIONS:</h3>
+            <table id="habilitationTable">
+                <tr>
+                    <th>Habilitation</th>
+                    <th>Date d'expiration</th>
+                </tr>
+                <tr>
+                    <td>1ERE INTERVENTION</td>
+                    <td>2025-04-24</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="add-habilitation">
+            <input type="text" id="habilitationInput" placeholder="Enter Habilitation">
+            <input type="date" id="expirationDateInput">
+            <button onclick="addHabilitation()">Add Habilitation</button>
+        </div>
+
+        <button class="add-button" onclick="requestPassword()">+</button>
+    </div>
+
+    <script>
+        // Function to request password and show form
+        function requestPassword() {
+            const password = prompt("Enter your password:");
+            const correctPassword = "0000"; // replace with your actual password
+
+            if (password === correctPassword) {
+                document.querySelector('.add-habilitation').style.display = 'block';
+            } else {
+                alert("Incorrect password. You cannot add habilitations.");
+            }
+        }
+
+        // Function to add habilitation
+        function addHabilitation() {
+            const habilitation = document.getElementById('habilitationInput').value;
+            const expirationDate = document.getElementById('expirationDateInput').value;
+            if (habilitation && expirationDate) {
+                const table = document.getElementById('habilitationTable');
+                const newRow = table.insertRow();
+                const cell1 = newRow.insertCell(0);
+                const cell2 = newRow.insertCell(1);
+                cell1.textContent = habilitation;
+                cell2.textContent = expirationDate;
+                alert("Habilitation added successfully!");
+                document.querySelector('.add-habilitation').style.display = 'none';
+            } else {
+                alert("Please fill in both fields.");
+            }
+        }
+    </script>
+</body>
+</html>
