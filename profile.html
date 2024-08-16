@@ -165,7 +165,7 @@
 
                     let profile = {};
                     rows.forEach(row => {
-                        const columns = row.split(',');
+                        const columns = row.split(/,(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)/); // Split CSV while handling commas in quotes
                         if (columns.length >= 7 && columns[3] === matricule) {
                             profile = {
                                 nom: columns[0],
@@ -173,8 +173,8 @@
                                 service: columns[2],
                                 matricule: columns[3],
                                 numTel: columns[4],
-                                habilitations: columns[5].split(','), // Split by comma
-                                expirationDates: columns[6].split(',') // Split by comma
+                                habilitations: columns[5].split(','),
+                                expirationDates: columns[6].split(',')
                             };
                         }
                     });
@@ -194,7 +194,7 @@
                             const cell3 = newRow.insertCell(2);
 
                             cell1.textContent = index + 1;
-                            cell2.textContent = habilitation;
+                            cell2.textContent = habilitation.trim(); // Trim any extra spaces
                             cell3.textContent = profile.expirationDates[index] || ''; // Handle missing expiration dates
                         });
                     } else {
@@ -238,6 +238,7 @@
                 cell2.textContent = habilitation;
                 cell3.textContent = expirationDate;
 
+                // Save to localStorage
                 let habilitations = JSON.parse(localStorage.getItem('habilitations') || '[]');
                 habilitations.push({ habilitation, expirationDate });
                 localStorage.setItem('habilitations', JSON.stringify(habilitations));
