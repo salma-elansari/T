@@ -173,8 +173,8 @@
                                 service: columns[2],
                                 matricule: columns[3],
                                 numTel: columns[4],
-                                habilitations: columns[5].split(';'),
-                                expirationDates: columns[6].split(';')
+                                habilitations: columns[5].split(','), // Split by comma
+                                expirationDates: columns[6].split(',') // Split by comma
                             };
                         }
                     });
@@ -195,7 +195,7 @@
 
                             cell1.textContent = index + 1;
                             cell2.textContent = habilitation;
-                            cell3.textContent = profile.expirationDates[index] || '';
+                            cell3.textContent = profile.expirationDates[index] || ''; // Handle missing expiration dates
                         });
                     } else {
                         alert('No profile found for the given matricule.');
@@ -205,7 +205,7 @@
 
         window.onload = loadProfile;
 
-        // Function to request password and show form based on action
+        // Functions for adding, editing, and deleting habilitations
         function requestPassword(action) {
             const password = prompt("Enter your password:");
             const correctPassword = "0000"; // replace with your actual password
@@ -223,7 +223,6 @@
             }
         }
 
-        // Function to add habilitation
         function addHabilitation() {
             const habilitation = document.getElementById('habilitationInput').value;
             const expirationDate = document.getElementById('expirationDateInput').value;
@@ -239,26 +238,22 @@
                 cell2.textContent = habilitation;
                 cell3.textContent = expirationDate;
 
-                let habilitations = JSON.parse(localStorage.getItem('habilitations')) || [];
+                let habilitations = JSON.parse(localStorage.getItem('habilitations') || '[]');
                 habilitations.push({ habilitation, expirationDate });
                 localStorage.setItem('habilitations', JSON.stringify(habilitations));
 
                 document.querySelector('.add-habilitation').style.display = 'none';
-                document.getElementById('habilitationInput').value = '';
-                document.getElementById('expirationDateInput').value = '';
             } else {
-                alert('Please fill in both fields.');
+                alert("Please enter both habilitation and expiration date.");
             }
         }
 
-        // Function to edit habilitation
         function editHabilitation() {
-            // Implementation needed
+            // Implement functionality to edit habilitations
         }
 
-        // Function to delete habilitation
         function deleteHabilitation() {
-            // Implementation needed
+            // Implement functionality to delete habilitations
         }
     </script>
 </body>
