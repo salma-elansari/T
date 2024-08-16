@@ -19,15 +19,18 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             position: relative;
         }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
         .header img {
             width: 50px;
             height: 50px;
+        }
+        .profile-photo {
+            display: block;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border: 2px solid white;
         }
         .info p {
             margin: 5px 0;
@@ -53,40 +56,6 @@
         .habilitation th {
             background-color: #2a3b54;
         }
-        .add-habilitation {
-            display: none;
-            margin-top: 20px;
-        }
-        .add-habilitation input {
-            margin: 5px 0;
-            padding: 5px;
-            width: 95%;
-        }
-        .add-habilitation button {
-            padding: 5px 10px;
-            background-color: #2a3b54;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .add-button {
-            position: absolute;
-            bottom: -20px;
-            right: -20px;
-            background-color: #2a3b54;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        }
     </style>
 </head>
 <body>
@@ -95,90 +64,78 @@
             <img src="IMG_20240813_093519.jpg" alt="Left Image">
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9NFZ3XpYY98phkMXXhYhQ0Wge6_fgddml9A&s" alt="Right Image">
         </div>
+        <img src="blank-profile-picture.webp" alt="Profile Photo" class="profile-photo">
+        
         <div class="info">
-            <p><span>NOM:</span> EL HARIRI</p>
-            <p><span>PRENOM:</span> SOMAYA</p>
-            <p><span>SERVICE:</span> Bureau des méthodes</p>
-            <p><span>MATRICULE:</span> 72200</p>
-            <p><span>NUMÉRO DE TÉLÉPHONE:</span> 0606907509</p>
+            <p><span>NOM:</span> <span id="nom"></span></p>
+            <p><span>PRENOM:</span> <span id="prenom"></span></p>
+            <p><span>SERVICE:</span> <span id="service"></span></p>
+            <p><span>MATRICULE:</span> <span id="matricule"></span></p>
+            <p><span>NUMÉRO DE TÉLÉPHONE:</span> <span id="numTel"></span></p>
         </div>
         <div class="habilitation">
             <h3>LISTE DES HABILITATIONS:</h3>
             <table id="habilitationTable">
                 <tr>
+                    <th>#</th>
                     <th>Habilitation</th>
                     <th>Date d'expiration</th>
                 </tr>
-                <tr>
-                    <td>1ERE INTERVENTION</td>
-                    <td>2025-04-24</td>
-                </tr>
             </table>
         </div>
-
-        <div class="add-habilitation">
-            <input type="text" id="habilitationInput" placeholder="Enter Habilitation">
-            <input type="date" id="expirationDateInput">
-            <button onclick="addHabilitation()">Add Habilitation</button>
-        </div>
-
-        <button class="add-button" onclick="requestPassword()">+</button>
     </div>
 
     <script>
-        // Function to request password and show form
-        function requestPassword() {
-            const password = prompt("Enter your password:");
-            const correctPassword = "0000"; // replace with your actual password
+        function loadProfile() {
+            const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSrz5-JmQ3GRNn-_0FCJkOY1XLtxb1lmbHSDQF_Z2H57MAIWri2LyDngSxiYIUjEQT0BBita1xtOqcF/pub?output=csv';
+            fetch(sheetURL) 
+                .then(response => response.text())
+                .then(data => {
+                    const rows = data.split('\n').slice(1); // Skip header row
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const matricule = urlParams.get('matricule'); // Get matricule from URL
 
-            if (password === correctPassword) {
-                document.querySelector('.add-habilitation').style.display = 'block';
-            } else {
-                alert("Incorrect password. You cannot add habilitations.");
-            }
+                    let profile = {};
+                    rows.forEach(row => {
+                        const columns = row.split(',');
+                        if (columns.length >= 7 && columns[3] === matricule) {
+                            profile = {
+                                nom: columns[0],
+                                prenom: columns[1],
+                                service: columns[2],
+                                matricule: columns[3],
+                                numTel: columns[4],
+                                habilitations: columns[5].split(';'),
+                                expirationDates: columns[6].split(';')
+                            };
+                        }
+                    });
+
+                    if (profile.nom) {
+                        document.getElementById('nom').textContent = profile.nom;
+                        document.getElementById('prenom').textContent = profile.prenom;
+                        document.getElementById('service').textContent = profile.service;
+                        document.getElementById('matricule').textContent = profile.matricule;
+                        document.getElementById('numTel').textContent = profile.numTel;
+
+                        const table = document.getElementById('habilitationTable');
+                        profile.habilitations.forEach((habilitation, index) => {
+                            const newRow = table.insertRow();
+                            const cell1 = newRow.insertCell(0);
+                            const cell2 = newRow.insertCell(1);
+                            const cell3 = newRow.insertCell(2);
+
+                            cell1.textContent = index + 1;
+                            cell2.textContent = habilitation;
+                            cell3.textContent = profile.expirationDates[index] || '';
+                        });
+                    } else {
+                        alert('No profile found for the given matricule.');
+                    }
+                });
         }
 
-        // Function to add habilitation
-        function addHabilitation() {
-            const habilitation = document.getElementById('habilitationInput').value;
-            const expirationDate = document.getElementById('expirationDateInput').value;
-
-            if (habilitation && expirationDate) {
-                // Add habilitation to the table
-                const table = document.getElementById('habilitationTable');
-                const newRow = table.insertRow();
-                const cell1 = newRow.insertCell(0);
-                const cell2 = newRow.insertCell(1);
-                cell1.textContent = habilitation;
-                cell2.textContent = expirationDate;
-
-                // Save habilitation to localStorage
-                let habilitations = JSON.parse(localStorage.getItem('habilitations')) || [];
-                habilitations.push({ habilitation, expirationDate });
-                localStorage.setItem('habilitations', JSON.stringify(habilitations));
-
-                alert("Habilitation added successfully!");
-                document.querySelector('.add-habilitation').style.display = 'none';
-            } else {
-                alert("Please fill in both fields.");
-            }
-        }
-
-        // Load habilitations from localStorage on page load
-        function loadHabilitations() {
-            const habilitations = JSON.parse(localStorage.getItem('habilitations')) || [];
-            const table = document.getElementById('habilitationTable');
-            habilitations.forEach(item => {
-                const newRow = table.insertRow();
-                const cell1 = newRow.insertCell(0);
-                const cell2 = newRow.insertCell(1);
-                cell1.textContent = item.habilitation;
-                cell2.textContent = item.expirationDate;
-            });
-        }
-
-        // Load habilitations when the page loads
-        window.onload = loadHabilitations;
+        window.onload = loadProfile;
     </script>
 </body>
 </html>
