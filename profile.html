@@ -1,50 +1,265 @@
-function loadProfile() {
-    const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSrz5-JmQ3GRNn-_0FCJkOY1XLtxb1lmbHSDQF_Z2H57MAIWri2LyDngSxiYIUjEQT0BBita1xtOqcF/pub?output=csv'; // Replace with your CSV link
-    fetch(sheetURL)
-        .then(response => response.text())
-        .then(data => {
-            const rows = data.split('\n').slice(1); // Skip header row
-            const urlParams = new URLSearchParams(window.location.search);
-            const matricule = urlParams.get('matricule'); // Get matricule from URL
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 300px;
+            margin: 0 auto;
+            background-color: #1a2a40;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header img {
+            width: 50px;
+            height: 50px;
+        }
+        .profile-photo {
+            display: block;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border: 2px solid white;
+        }
+        .info p {
+            margin: 5px 0;
+        }
+        .info p span {
+            font-weight: bold;
+        }
+        .habilitation {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .habilitation table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .habilitation table, .habilitation th, .habilitation td {
+            border: 1px solid white;
+        }
+        .habilitation th, .habilitation td {
+            padding: 8px;
+            text-align: center;
+        }
+        .habilitation th {
+            background-color: #2a3b54;
+        }
+        .action-buttons {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-around;
+        }
+        .action-buttons button {
+            padding: 5px 10px;
+            background-color: #2a3b54;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .add-habilitation {
+            display: none;
+            margin-top: 20px;
+        }
+        .add-habilitation input {
+            margin: 5px 0;
+            padding: 5px;
+            width: 95%;
+        }
+        .add-habilitation button {
+            padding: 5px 10px;
+            background-color: #2a3b54;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .add-button {
+            position: absolute;
+            bottom: -20px;
+            right: -20px;
+            background-color: #2a3b54;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="IMG_20240813_093519.jpg" alt="Left Image">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9NFZ3XpYY98phkMXXhYhQ0Wge6_fgddml9A&s" alt="Right Image">
+        </div>
+        <!-- Profile Photo -->
+        <img src="blank-profile-picture.webp" alt="Profile Photo" class="profile-photo">
+        
+        <div class="info">
+            <p><span>NOM:</span> <span id="Nom"></span></p>
+            <p><span>PRENOM:</span> <span id="Prénom"></span></p>
+            <p><span>SERVICE:</span> <span id="SERVICE"></span></p>
+            <p><span>MATRICULE:</span> <span id="MATRICULE"></span></p>
+            <p><span>NUMÉRO DE TÉLÉPHONE:</span> <span id="NUM DE TELE"></span></p>
+        </div>
+        <div class="habilitation">
+            <h3>LISTE DES HABILITATIONS:</h3>
+            <table id="habilitationTable">
+                <tr>
+                    <th>#</th>
+                    <th>Habilitation</th>
+                    <th>Date d'expiration</th>
+                </tr>
+            </table>
+        </div>
 
-            let profile = {};
-            rows.forEach(row => {
-                const columns = row.split(',');
-                if (columns.length >= 7 && columns[3] === matricule) {
-                    profile = {
-                        nom: columns[0],
-                        prenom: columns[1],
-                        service: columns[2],
-                        matricule: columns[3],
-                        numTel: columns[4],
-                        habilitations: columns[5].split(';'),
-                        expirationDates: columns[6].split(';')
-                    };
-                }
-            });
+        <div class="action-buttons">
+            <button onclick="requestPassword('edit')">✎</button>
+            <button onclick="requestPassword('delete')">-</button>
+        </div>
 
-            if (profile.nom) {
-                document.getElementById('nom').textContent = profile.nom;
-                document.getElementById('prenom').textContent = profile.prenom;
-                document.getElementById('service').textContent = profile.service;
-                document.getElementById('matricule').textContent = profile.matricule;
-                document.getElementById('numTel').textContent = profile.numTel;
+        <div class="add-habilitation">
+            <input type="text" id="habilitationInput" placeholder="Enter Habilitation">
+            <input type="date" id="expirationDateInput">
+            <button onclick="addHabilitation()">Add Habilitation</button>
+        </div>
 
-                const table = document.getElementById('habilitationTable');
-                profile.habilitations.forEach((habilitation, index) => {
-                    const newRow = table.insertRow();
-                    const cell1 = newRow.insertCell(0);
-                    const cell2 = newRow.insertCell(1);
-                    const cell3 = newRow.insertCell(2);
+        <button class="add-button" onclick="requestPassword('add')">+</button>
+    </div>
 
-                    cell1.textContent = index + 1;
-                    cell2.textContent = habilitation;
-                    cell3.textContent = profile.expirationDates[index] || '';
+    <script>
+        function loadProfile() {
+            const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSrz5-JmQ3GRNn-_0FCJkOY1XLtxb1lmbHSDQF_Z2H57MAIWri2LyDngSxiYIUjEQT0BBita1xtOqcF/pub?output=csv'; // Replace with your CSV link
+            fetch(sheetURL)
+                .then(response => response.text())
+                .then(data => {
+                    const rows = data.split('\n').slice(1); // Skip header row
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const matricule = urlParams.get('matricule'); // Get matricule from URL
+
+                    let profile = {};
+                    rows.forEach(row => {
+                        const columns = row.split(',');
+                        if (columns.length >= 7 && columns[3] === matricule) {
+                            profile = {
+                                nom: columns[0],
+                                prenom: columns[1],
+                                service: columns[2],
+                                matricule: columns[3],
+                                numTel: columns[4],
+                                habilitations: columns[5].split(';'),
+                                expirationDates: columns[6].split(';')
+                            };
+                        }
+                    });
+
+                    if (profile.nom) {
+                        document.getElementById('Nom').textContent = profile.nom;
+                        document.getElementById('Prénom').textContent = profile.prenom;
+                        document.getElementById('SERVICE').textContent = profile.service;
+                        document.getElementById('MATRICULE').textContent = profile.matricule;
+                        document.getElementById('NUM DE TELE').textContent = profile.numTel;
+
+                        const table = document.getElementById('habilitationTable');
+                        profile.habilitations.forEach((habilitation, index) => {
+                            const newRow = table.insertRow();
+                            const cell1 = newRow.insertCell(0);
+                            const cell2 = newRow.insertCell(1);
+                            const cell3 = newRow.insertCell(2);
+
+                            cell1.textContent = index + 1;
+                            cell2.textContent = habilitation;
+                            cell3.textContent = profile.expirationDates[index] || '';
+                        });
+                    } else {
+                        alert('No profile found for the given matricule.');
+                    }
                 });
-            } else {
-                alert('No profile found for the given matricule.');
-            }
-        });
-}
+        }
 
-window.onload = loadProfile;
+        window.onload = loadProfile;
+
+        // Function to request password and show form based on action
+        function requestPassword(action) {
+            const password = prompt("Enter your password:");
+            const correctPassword = "0000"; // replace with your actual password
+
+            if (password === correctPassword) {
+                if (action === 'add') {
+                    document.querySelector('.add-habilitation').style.display = 'block';
+                } else if (action === 'edit') {
+                    editHabilitation();
+                } else if (action === 'delete') {
+                    deleteHabilitation();
+                }
+            } else {
+                alert("Incorrect password. You cannot perform this action.");
+            }
+        }
+
+        // Function to add habilitation
+        function addHabilitation() {
+            const habilitation = document.getElementById('habilitationInput').value;
+            const expirationDate = document.getElementById('expirationDateInput').value;
+
+            if (habilitation && expirationDate) {
+                const table = document.getElementById('habilitationTable');
+                const newRow = table.insertRow();
+                const cell1 = newRow.insertCell(0);
+                const cell2 = newRow.insertCell(1);
+                const cell3 = newRow.insertCell(2);
+                
+                cell1.textContent = table.rows.length - 1;
+                cell2.textContent = habilitation;
+                cell3.textContent = expirationDate;
+
+                let habilitations = JSON.parse(localStorage.getItem('habilitations')) || [];
+                habilitations.push({ habilitation, expirationDate });
+                localStorage.setItem('habilitations', JSON.stringify(habilitations));
+
+                document.querySelector('.add-habilitation').style.display = 'none';
+                document.getElementById('habilitationInput').value = '';
+                document.getElementById('expirationDateInput').value = '';
+            } else {
+                alert('Please fill in both fields.');
+            }
+        }
+
+        // Function to edit habilitation
+        function editHabilitation() {
+            // Implementation needed
+        }
+
+        // Function to delete habilitation
+        function deleteHabilitation() {
+            // Implementation needed
+        }
+    </script>
+</body>
+</html>
