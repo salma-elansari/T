@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background: linear-gradient(90deg, green, blue); /* Green to blue gradient */
         }
         .container {
             width: 300px;
@@ -28,15 +28,6 @@
         .header img {
             width: 50px;
             height: 50px;
-        }
-        .profile-photo {
-            display: block;
-            margin: 0 auto 20px;
-            border-radius: 50%;
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            border: 2px solid white;
         }
         .info p {
             margin: 5px 0;
@@ -62,54 +53,6 @@
         .habilitation th {
             background-color: #2a3b54;
         }
-        .action-buttons {
-            margin-top: 10px;
-            display: flex;
-            justify-content: space-around;
-        }
-        .action-buttons button {
-            padding: 5px 10px;
-            background-color: #2a3b54;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .add-habilitation {
-            display: none;
-            margin-top: 20px;
-        }
-        .add-habilitation input {
-            margin: 5px 0;
-            padding: 5px;
-            width: 95%;
-        }
-        .add-habilitation button {
-            padding: 5px 10px;
-            background-color: #2a3b54;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .add-button {
-            position: absolute;
-            bottom: -20px;
-            right: -20px;
-            background-color: #2a3b54;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        }
     </style>
 </head>
 <body>
@@ -118,8 +61,6 @@
             <img src="IMG_20240813_093519.jpg" alt="Left Image">
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9NFZ3XpYY98phkMXXhYhQ0Wge6_fgddml9A&s" alt="Right Image">
         </div>
-        <!-- Profile Photo -->
-        <img src="blank-profile-picture.webp" alt="Profile Photo" class="profile-photo">
         
         <div class="info">
             <p><span>NOM:</span> <span id="Nom"></span></p>
@@ -138,19 +79,6 @@
                 </tr>
             </table>
         </div>
-
-        <div class="action-buttons">
-            <button onclick="requestPassword('edit')">✎</button>
-            <button onclick="requestPassword('delete')">-</button>
-        </div>
-
-        <div class="add-habilitation">
-            <input type="text" id="habilitationInput" placeholder="Enter Habilitation">
-            <input type="date" id="expirationDateInput">
-            <button onclick="addHabilitation()">Add Habilitation</button>
-        </div>
-
-        <button class="add-button" onclick="requestPassword('add')">+</button>
     </div>
 
     <script>
@@ -204,58 +132,6 @@
         }
 
         window.onload = loadProfile;
-
-        // Functions for adding, editing, and deleting habilitations
-        function requestPassword(action) {
-            const password = prompt("Enter your password:");
-            const correctPassword = "0000"; // replace with your actual password
-
-            if (password === correctPassword) {
-                if (action === 'add') {
-                    document.querySelector('.add-habilitation').style.display = 'block';
-                } else if (action === 'edit') {
-                    editHabilitation();
-                } else if (action === 'delete') {
-                    deleteHabilitation();
-                }
-            } else {
-                alert("Incorrect password. You cannot perform this action.");
-            }
-        }
-
-        function addHabilitation() {
-            const habilitation = document.getElementById('habilitationInput').value;
-            const expirationDate = document.getElementById('expirationDateInput').value;
-
-            if (habilitation && expirationDate) {
-                const table = document.getElementById('habilitationTable');
-                const newRow = table.insertRow();
-                const cell1 = newRow.insertCell(0);
-                const cell2 = newRow.insertCell(1);
-                const cell3 = newRow.insertCell(2);
-                
-                cell1.textContent = table.rows.length - 1;
-                cell2.textContent = habilitation;
-                cell3.textContent = expirationDate;
-
-                // Save to localStorage
-                let habilitations = JSON.parse(localStorage.getItem('habilitations') || '[]');
-                habilitations.push({ habilitation, expirationDate });
-                localStorage.setItem('habilitations', JSON.stringify(habilitations));
-
-                document.querySelector('.add-habilitation').style.display = 'none';
-            } else {
-                alert("Please enter both habilitation and expiration date.");
-            }
-        }
-
-        function editHabilitation() {
-            // Implement functionality to edit habilitations
-        }
-
-        function deleteHabilitation() {
-            // Implement functionality to delete habilitations
-        }
     </script>
 </body>
 </html>
