@@ -7,12 +7,12 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0; /* Neutral background for the whole page */
+            background-color: #f0f0f0;
         }
         .container {
             width: 300px;
             margin: 0 auto;
-            background: linear-gradient(90deg, green, blue); /* Green to blue gradient */
+            background: linear-gradient(90deg, green, blue);
             color: white;
             padding: 20px;
             border-radius: 10px;
@@ -24,6 +24,11 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+        }
+        .header img {
+            width: 40px; /* Adjusting size to make it smaller */
+            height: 40px; /* Ensuring both images have the same height */
+            object-fit: contain; /* Ensuring images maintain their aspect ratio */
         }
         .info p {
             margin: 5px 0;
@@ -47,7 +52,7 @@
             text-align: center;
         }
         .habilitation th {
-            background-color: #1e3a5f; /* Dark blue for the table headers */
+            background-color: #1e3a5f;
         }
     </style>
 </head>
